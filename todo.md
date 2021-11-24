@@ -3,9 +3,9 @@
     - [] Mise en place producer kafka 
 
 ### Base de données (Louis)
-    - [] Mise en place de la BDD 
-    - [] Mise en place Docker 
-    - [] Mise en place Consumer 
+    - [x] Mise en place de la BDD 
+    - [x] Mise en place Docker 
+    - [x] Mise en place Consumer 
 
 ### Machine learning (Paul, Owain)
     - [] Recherche du model de prédiction 
