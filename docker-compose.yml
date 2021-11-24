@@ -1,0 +1,146 @@
+version: "3.2"
+services:
+  ccxt-producer:
+    container_name: ccxt-producer
+    restart: on-failure
+    command: python3 ./ccxt_producer.py
+    build:
+      dockerfile: ../../Dockerfile
+      context: ./ccxt/producer
+    volumes:
+      - ./ccxt/producer:/usr/src
+      - ./.env:/usr/src/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+
+  news-producer:
+    container_name: news-producer
+    restart: on-failure
+    command: python3 ./news_producer.py
+    build:
+      dockerfile: ../../Dockerfile
+      context: ./news/producer
+    volumes:
+      - ./news/producer:/usr/src
+      - ./.env:/usr/src/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+
+  ccxt-consumer:
+    container_name: ccxt-consumer
+    restart: on-failure
+    command: python3 ./ccxt_consumer.py
+    build:
+      dockerfile: ../../Dockerfile
+      context: ./ccxt/consumer
+    depends_on:
+      - mongodb
+      - ccxt-producer
+    volumes:
+      - ./ccxt/consumer:/usr/src
+      - ./.env:/usr/src/.env
+    networks:
+      - kafka-network
+      - database-network
+
+  news-consumer:
+    container_name: news-consumer
+    restart: on-failure
+    command: python3 ./news_consumer.py
+    build:
+      dockerfile: ../../Dockerfile
+      context: ./news/consumer
+    depends_on:
+      - mongodb
+      - news-producer
+    volumes:
+      - ./news/consumer:/usr/src
+      - ./.env:/usr/src/.env
+    networks:
+      - kafka-network
+      - database-network
+
+  streamlit:
+    container_name: streamlit
+    command: streamlit run app.py
+    build:
+      dockerfile: ../Dockerfile
+      context: ./streamlit
+    volumes:
+      - ./streamlit:/usr/src
+    depends_on:
+      - ccxt-producer
+      - news-producer
+    networks:
+      - database-network
+    ports:
+      - 8501:8501
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    hostname: mongodb
+    restart: unless-stopped
+    command: mongod --auth
+    env_file: .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: big-data-project
+      MONGODB_DATA_DIR: /data/db
+      MONGODB_LOG_DIR: /dev/null
+    volumes:
+      - mongo_db:/data/db
+    networks:
+      - database-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka-network
+
+  kafka:
+    image: confluentinc/cp-kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_CREATE_TOPICS: crypto_raw,crypto_news
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+    healthcheck:
+      test: ["CMD", "bash", "-c", "unset", "JMX_PORT", ";", "/bin/kafka-topics.sh", "--zookeeper", "zookeeper:2181", "--list"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    networks:
+      - kafka-network
+    ports:
+      - 29092:29092
+      - 9092:9092
+      - 30001:30001
+
+networks:
+  kafka-network:
+    driver: "bridge"
+  database-network:
+    driver: "bridge"
+
+volumes:
+  mongo_db:
