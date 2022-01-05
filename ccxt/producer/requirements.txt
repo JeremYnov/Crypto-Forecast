@@ -1,0 +1,5 @@
+numpy==1.21.3
+pandas==1.3.4
+ccxt==1.59.54
+kafka-python==2.0.2
+python-dotenv==0.19.2

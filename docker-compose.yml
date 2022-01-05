@@ -16,22 +16,6 @@ services:
     networks:
       - kafka-network
 
-  news-producer:
-    container_name: news-producer
-    restart: on-failure
-    command: python3 ./news_producer.py
-    build:
-      dockerfile: ../../Dockerfile
-      context: ./news/producer
-    volumes:
-      - ./news/producer:/usr/src
-      - ./.env:/usr/src/.env
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - kafka-network
-
   ccxt-consumer:
     container_name: ccxt-consumer
     restart: on-failure
@@ -49,34 +33,16 @@ services:
       - kafka-network
       - database-network
 
-  news-consumer:
-    container_name: news-consumer
-    restart: on-failure
-    command: python3 ./news_consumer.py
-    build:
-      dockerfile: ../../Dockerfile
-      context: ./news/consumer
-    depends_on:
-      - mongodb
-      - news-producer
-    volumes:
-      - ./news/consumer:/usr/src
-      - ./.env:/usr/src/.env
-    networks:
-      - kafka-network
-      - database-network
-
-  streamlit:
-    container_name: streamlit
+  interface:
+    container_name: interface
     command: streamlit run app.py
     build:
       dockerfile: ../Dockerfile
-      context: ./streamlit
+      context: ./interface
     volumes:
-      - ./streamlit:/usr/src
+      - ./interface:/usr/src
     depends_on:
       - ccxt-producer
-      - news-producer
     networks:
       - database-network
     ports:
@@ -92,7 +58,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_DATABASE: big-data-project
+      MONGO_INITDB_DATABASE: crypto-forecast
       MONGODB_DATA_DIR: /data/db
       MONGODB_LOG_DIR: /dev/null
     volumes:
@@ -115,7 +81,7 @@ services:
     depends_on:
       - zookeeper
     environment:
-      KAFKA_CREATE_TOPICS: crypto_raw,crypto_news
+      KAFKA_CREATE_TOPICS: crypto_raw
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
