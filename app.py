@@ -1,3 +1,3 @@
-from data.fill_db import insert_data_yahoo
+from data.update_btc_datas import update_bitcoin_datas
 
-insert_data_yahoo()
+update_datas( False )
