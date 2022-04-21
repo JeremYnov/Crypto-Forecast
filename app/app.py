@@ -12,17 +12,17 @@ pred_columns = { '_id', 'Predicted High', 'Predicted Low', 'Predicted Open', 'Pr
 
 @app.route('/docs', methods=['GET'])
 def docs():
-    response = btc_collection.find({}).limit(request.args[0]) if request.args[0] else btc_collection.find({})
+    response = btc_collection.find({}).limit(request.args['pages']) if request.args['pages'] else btc_collection.find({})
     return json.dumps(response), 200
 
 @app.route('/btcPrice', methods=['GET'])
 def btcPrice():
-    response = btc_collection.find(btc_columns).limit(request.args[0]) if request.args[0] else btc_collection.find(btc_columns)
+    response = btc_collection.find(btc_columns).limit(request.args['pages']) if request.args['pages'] else btc_collection.find(btc_columns)
     return json.dumps(response), 200
 
 @app.route('/predPrice', methods=['GET'])
 def predPrice():
-    response = btc_collection.find(pred_columns).limit(request.args[0]) if request.args[0] else btc_collection.find(pred_columns)
+    response = btc_collection.find(pred_columns).limit(request.args['pages']) if request.args['pages'] else btc_collection.find(pred_columns)
     return json.dumps(response), 200
 
 @app.route('/lastRow', methods=['GET'])
