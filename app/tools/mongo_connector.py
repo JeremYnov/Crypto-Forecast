@@ -5,9 +5,9 @@ from dotenv import load_dotenv
 class Mongo:
     def __init__(self):
         load_dotenv()
-        self.client = MongoClient(f"mongodb://{os.getenv('MONGO_ROOT_USERNAME')}:{os.getenv('MONGO_ROOT_PASSWORD')}@mongodb:27017")
+        self.client = MongoClient(os.getenv("MONGO_URL"))
         # database connection
-        self.database = self.client[os.getenv("MONGO_DATABASE")]
+        self.database = self.client[os.getenv("MONGO_DB_NAME")]
     
     def getCollection(self, collection):
         # collections creation

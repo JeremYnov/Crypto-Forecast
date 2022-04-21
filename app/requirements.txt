@@ -1,0 +1,8 @@
+pymongo
+#python-dotenv
+pandas-datareader
+pandas
+numpy
+#tensorflow
+#sklearn
+python-dotenv
