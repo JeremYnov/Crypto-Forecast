@@ -6,3 +6,4 @@ numpy
 #tensorflow
 #sklearn
 python-dotenv
+flask-restful

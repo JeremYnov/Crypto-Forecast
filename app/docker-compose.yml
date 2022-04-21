@@ -32,6 +32,8 @@ services:
     #restart: always
     image:
       python:3.8
+    ports:
+      - 5000:5000
     environment:
       MONGO_URL: ${MONGO_URL}
       MONGO_DB_NAME: ${MONGO_DB_NAME}
@@ -41,4 +43,5 @@ services:
       - mongo
     command: >
       sh -c "pip install -r /cryptoForecast/requirements.txt &&
-             python3 /cryptoForecast/script_update_btc_datas.py --True"
+             python3 /cryptoForecast/script_update_btc_datas.py --True &&
+             python3 /cryptoForecast/app.py"
