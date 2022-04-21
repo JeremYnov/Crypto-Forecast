@@ -26,7 +26,7 @@ def predPrice():
     return json.dumps(response), 200
 
 @app.route('/lastRow', methods=['GET'])
-def predPrice():
+def lastRow():
     response = btc_collection.find().sort({'_id':-1}).limit(1)
     return json.dumps(response), 200
 
