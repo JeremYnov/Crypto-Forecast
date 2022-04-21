@@ -37,6 +37,7 @@ services:
     environment:
       MONGO_URL: ${MONGO_URL}
       MONGO_DB_NAME: ${MONGO_DB_NAME}
+      FLASK_APP: app.py
     volumes:
       - .:/cryptoForecast
     depends_on:
@@ -44,4 +45,5 @@ services:
     command: >
       sh -c "pip install -r /cryptoForecast/requirements.txt &&
              python3 /cryptoForecast/script_update_btc_datas.py --True &&
-             python3 /cryptoForecast/app.py"
+             cd cryptoForecast &&
+             python3 -m flask run"

@@ -26,7 +26,7 @@ def predPrice():
     return json.dumps(response), 200
 
 @app.route('/lastRow', methods=['GET'])
-def predPrice():
+def lastRow():
     response = btc_collection.find().sort({'_id':-1}).limit(1)
     return json.dumps(response), 200
 
@@ -38,3 +38,6 @@ route 4 : retourner que dernière prédiction
 
 TODO : Ajouter la tendance dans le Db
 '''
+
+if __name__ == "__main__":
+	app.run()
