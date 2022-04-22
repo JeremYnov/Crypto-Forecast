@@ -1,0 +1,49 @@
+version: "3.2"
+services:
+
+  mongo:
+    image: mongo
+    container_name: mongodb
+    hostname: mongodb
+    restart: unless-stopped
+    command: mongod --auth
+    env_file: .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+      MONGODB_DATA_DIR: ./volumes/db
+      MONGODB_LOG_DIR: /dev/null
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_URL: ${MONGO_URL}
+    depends_on:
+      - mongo
+
+  app:
+    container_name: app
+    #restart: always
+    image:
+      python:3.8
+    ports:
+      - 5000:5000
+    environment:
+      MONGO_URL: ${MONGO_URL}
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+      FLASK_APP: app.py
+    volumes:
+      - .:/cryptoForecast
+    depends_on:
+      - mongo
+    command: >
+      sh -c "pip install -r /cryptoForecast/requirements.txt &&
+             python3 /cryptoForecast/script_update_btc_datas.py --True &&
+             cd cryptoForecast &&
+             python3 -m flask run"
