@@ -29,7 +29,7 @@ services:
 
   app:
     container_name: app
-    #restart: always
+    restart: always
     image:
       python:3.8
     ports:
@@ -46,4 +46,4 @@ services:
       sh -c "pip install -r /cryptoForecast/requirements.txt &&
              python3 /cryptoForecast/script_update_btc_datas.py --True &&
              cd cryptoForecast &&
-             python3 -m flask run"
+             python3 -m flask run --host=0.0.0.0"

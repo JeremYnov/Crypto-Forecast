@@ -11,27 +11,36 @@ app = Flask(__name__)
 mongo = Mongo()
 btc_collection = mongo.getCollection("btc")
 
-btc_columns = { '_id', 'High', 'Low', 'Open', 'Close', 'Volume' }
-pred_columns = { '_id', 'Predicted High', 'Predicted Low', 'Predicted Open', 'Predicted Close', 'Predicted Volume' }
+btc_columns = { '_id':1, 'High':1, 'Low':1, 'Open':1, 'Close':1, 'Volume':1 }
+pred_columns = { '_id':1, 'Predicted High':1, 'Predicted Low':1, 'Predicted Open':1, 'Predicted Close':1, 'Predicted Volume':1 }
 
 @app.route('/docs', methods=['GET'])
 def docs():
-    response = btc_collection.find({}).limit(int( request.args.get('pages') )) if int( request.args.get('pages') ) else btc_collection.find({})
+    try:
+        response = btc_collection.find({}).limit(int( request.args.get('pages') )) 
+    except TypeError:
+        response = btc_collection.find({})
     return json.dumps( list(response), default=json_util.default), 200
 
 @app.route('/btcPrice', methods=['GET'])
 def btcPrice():
-    response = btc_collection.find(btc_columns).limit(int( request.args.get('pages') )) if int( request.args.get('pages') ) else btc_collection.find(btc_columns)
+    try:
+        response = btc_collection.find({},btc_columns).limit(int( request.args.get('pages') ))
+    except TypeError:
+        response = btc_collection.find({},btc_columns)
     return json.dumps( list(response), default=json_util.default), 200
 
 @app.route('/predPrice', methods=['GET'])
 def predPrice():
-    response = btc_collection.find(pred_columns).limit(int( request.args.get('pages') )) if int( request.args.get('pages') ) else btc_collection.find(pred_columns)
+    try:
+        response = btc_collection.find({},pred_columns).limit(int( request.args.get('pages') ))
+    except TypeError:
+        response = btc_collection.find({},pred_columns)
     return json.dumps( list(response), default=json_util.default), 200
 
 @app.route('/lastRow', methods=['GET'])
 def lastRow():
-    response = btc_collection.find().sort({'_id':-1}).limit(1)
+    response = btc_collection.find().sort("_id", -1).limit(1)
     return json.dumps( list(response), default=json_util.default), 200
 
 @app.route('/')
