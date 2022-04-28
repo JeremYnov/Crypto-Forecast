@@ -40,12 +40,8 @@ def predPrice():
 
 @app.route('/lastRow', methods=['GET'])
 def lastRow():
-    response = btc_collection.find().sort("_id", -1).limit(1)
-    return json.dumps( list(response), default=json_util.default), 200
-
-@app.route('/')
-def hello_geek():
-    return '<h1>Hello from Flask & Docker</h2>'
+    response = btc_collection.find().sort({'_id':-1}).limit(1)
+    return json.dumps(response), 200
 
 '''
 route 1 : Retourner toutes les valeurs de la DB
