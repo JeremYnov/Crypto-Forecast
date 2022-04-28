@@ -130,3 +130,6 @@ dmypy.json
 
 data/dataset/
 sentiment-analysis/data_sources/credentials/
+
+interface/node_modules
+
