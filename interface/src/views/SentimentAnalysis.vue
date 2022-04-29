@@ -1,64 +1,36 @@
 <script setup lang="ts">
 import { computed, defineComponent, onMounted, reactive, ref } from "vue";
-import { DoughnutChart, useDoughnutChart } from "vue-chart-3";
-import { Chart, ChartData, ChartOptions, registerables } from "chart.js";
+import { Chart, registerables } from "chart.js";
 import axios from "axios";
-
-const state = reactive({
-  pokemons: [],
-});
-
-const fetchPokemon = () => {
-  axios.get("https://pokeapi.co/api/v2/pokemon?offset=0").then((response) => {
-    state.pokemons = response.data.results;
-  });
-};
-
-fetchPokemon();
+import { CHART_COLORS, months } from "../chartjs/Utils";
+import DoughnutChart from "../components/DataVizualization/DoughnutChart.vue";
+import LineChart from "../components/DataVizualization/LineChart.vue";
 
 Chart.register(...registerables);
 
-const dataValues = ref([30, 40, 60]);
-const dataLabels = ref(["Negative", "Positive", "Neutral"]);
-const toggleLegend = ref(true);
+const numericData = ref(""); // use const because you dont want to lose this value
+const loadingState = ref("");
 
-const testData = computed<ChartData<"doughnut">>(() => ({
-  labels: dataLabels.value,
-  datasets: [
-    {
-      data: dataValues.value,
-      backgroundColor: ["#FF0000", "#008000", "#808080"],
-    },
-  ],
-}));
-
-const options = computed<ChartOptions<"doughnut">>(() => ({
-  scales: {
-    myScale: {
-      type: "logarithmic",
-      position: toggleLegend.value ? "left" : "right",
-    },
-  },
-  plugins: {
-    legend: {
-      position: toggleLegend.value ? "top" : "bottom",
-    },
-    title: {
-      display: true,
-      text: "Sentiment Analysis",
-    },
-  },
-}));
-
-const { doughnutChartProps, doughnutChartRef } = useDoughnutChart({
-  chartData: testData,
-  options,
+// Fetch Data Feature
+const fetchNumericData = () => {
+  loadingState.value = "loading";
+  return axios.get("/api/docs").then((response) => {
+    loadingState.value = "success";
+    numericData.value = JSON.parse(response.data.replace(/NaN/g, 0));
+  });
+};
+onMounted(() => {
+  fetchNumericData();
 });
 </script>
 
 <template>
   <div style="width: 400px">
-    <DoughnutChart v-bind="doughnutChartProps" />
-    <div>{{ state.pokemons }}</div>
+    <!-- <div>{{ characters }}</div> -->
+    <DoughnutChart />
+    <LineChart />
+    <div v-for="(element, key) in numericData" :key="key">
+      <p>TEST {{ key }} = {{ element }}</p>
+    </div>
   </div>
 </template>
