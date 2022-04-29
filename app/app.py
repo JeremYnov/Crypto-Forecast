@@ -3,10 +3,9 @@ from tools.mongo_connector import Mongo
 import json
 from bson import json_util
 import os
+import datetime
 
 app = Flask(__name__)
-
-
 
 mongo = Mongo()
 btc_collection = mongo.getCollection("btc")
@@ -14,13 +13,20 @@ btc_collection = mongo.getCollection("btc")
 btc_columns = { '_id':1, 'High':1, 'Low':1, 'Open':1, 'Close':1, 'Volume':1 }
 pred_columns = { '_id':1, 'Predicted High':1, 'Predicted Low':1, 'Predicted Open':1, 'Predicted Close':1, 'Predicted Volume':1 }
 
+def parse_date(queryReturn):
+    for element in queryReturn:
+        element['Date'] = element['_id'].strftime("%d-%m-%y")
+        del element['_id']
+    return queryReturn
+    
+
 @app.route('/docs', methods=['GET'])
 def docs():
     try:
-        response = btc_collection.find({}).limit(int( request.args.get('pages') )) 
+        response = btc_collection.find({}).limit(int( request.args.get('pages') ))
     except TypeError:
         response = btc_collection.find({})
-    return json.dumps( list(response), default=json_util.default), 200
+    return json.dumps( parse_date(list(response)), default=json_util.default), 200
 
 @app.route('/btcPrice', methods=['GET'])
 def btcPrice():
@@ -28,7 +34,7 @@ def btcPrice():
         response = btc_collection.find({},btc_columns).limit(int( request.args.get('pages') ))
     except TypeError:
         response = btc_collection.find({},btc_columns)
-    return json.dumps( list(response), default=json_util.default), 200
+    return json.dumps( parse_date(list(response)), default=json_util.default), 200
 
 @app.route('/predPrice', methods=['GET'])
 def predPrice():
@@ -36,12 +42,12 @@ def predPrice():
         response = btc_collection.find({},pred_columns).limit(int( request.args.get('pages') ))
     except TypeError:
         response = btc_collection.find({},pred_columns)
-    return json.dumps( list(response), default=json_util.default), 200
+    return json.dumps( parse_date(list(response)), default=json_util.default), 200
 
 @app.route('/lastRow', methods=['GET'])
 def lastRow():
     response = btc_collection.find().sort("_id", -1).limit(1)
-    return json.dumps( list(response), default=json_util.default), 200
+    return json.dumps( parse_date(list(response)), default=json_util.default), 200
 
 @app.route('/')
 def hello_geek():
