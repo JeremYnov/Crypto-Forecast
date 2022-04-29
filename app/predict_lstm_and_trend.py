@@ -1,9 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 import datetime as dt
-from time import sleep
-import os
 import pymongo
 
 from sklearn.preprocessing import MinMaxScaler
@@ -11,6 +8,8 @@ from sklearn.ensemble import RandomForestRegressor
 
 from tools.mongo_connector import Mongo
 import pandas_datareader as pd_dr
+
+from script_update_btc_datas import update_datas
 
 from tensorflow.keras.layers import Dense, Dropout, LSTM
 from tensorflow.keras.models import Sequential, save_model, load_model
@@ -25,6 +24,11 @@ class Predict:
         self.btc_collection = mongo.getCollection("btc")
         self.name_model_lstm = "model_ltsm"
         self.chunks_size = 90
+        # on ajoute la donnée de la journée
+        try:
+            update_datas(False)
+        except:
+            print("données déjà mis en base aujourd'hui")
 
     
     def get_data(self):
@@ -181,10 +185,16 @@ class Predict:
         lstm_testing_x.append(model_inputs)
 
         lstm_testing_x = np.array(lstm_testing_x)
-
+        print(lstm_testing_x)
+        
         # on predit
+        print("debut de la prediciton")
         self.prediction_prices = model.predict(lstm_testing_x)
+        print("fin de la prediciton")
+        
         self.prediction_prices = self.scaler.inverse_transform(self.prediction_prices)
+
+        
     
     def update_data_predict_ltsm(self):
         query = {"_id": dt.datetime(int(self.now.strftime("%Y")), int(self.now.strftime("%m")), int(self.now.strftime("%d")), 0, 0)}
