@@ -3,7 +3,7 @@ pymongo
 pandas-datareader
 pandas
 numpy
-#tensorflow
-#sklearn
+tensorflow
+sklearn
 python-dotenv
 flask-restful
