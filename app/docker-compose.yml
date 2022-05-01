@@ -7,6 +7,8 @@ services:
     restart: unless-stopped
     command: mongod --auth
     env_file: .env
+    volumes:
+      - mongo:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
@@ -45,7 +47,7 @@ services:
 
   app:
     container_name: app
-    restart: always
+    #restart: always
     image:
       python:3.8
     ports:
@@ -62,4 +64,6 @@ services:
       sh -c "pip install -r /cryptoForecast/requirements.txt &&
              python3 /cryptoForecast/script_update_btc_datas.py --True &&
              cd cryptoForecast &&
-             python3 -m flask run --host=0.0.0.0"
+             python3 -m flask run"
+volumes:
+  mongo:
