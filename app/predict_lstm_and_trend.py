@@ -17,13 +17,14 @@ from tensorflow.keras.models import Sequential, save_model, load_model
 
 class Predict:
 
-    def __init__(self):
+    def __init__(self, date):
         self.btc_columns = { '_id': 1, 'High': 1, 'Low': 1, 'Open': 1, 'Close': 1, 'Volume': 1 }
         # recuperation de mongo et de la collection btc
         mongo = Mongo()
         self.btc_collection = mongo.getCollection("btc")
         self.name_model_lstm = "model_ltsm"
         self.chunks_size = 90
+        self.date = date
         # on ajoute la donnée de la journée
         try:
             update_datas(False)
@@ -33,9 +34,13 @@ class Predict:
     
     def get_data(self):
         # recuperation de toutes les datas du btc order by date
-        btc_data = self.btc_collection.find({}, self.btc_columns).sort("_id", pymongo.ASCENDING)
+        btc_data = self.btc_collection.find({"_id": {"$lt": self.date}}, self.btc_columns).sort("_id", pymongo.ASCENDING)
+        data_now = self.btc_collection.find({"_id": self.date}, self.btc_columns).sort("_id", pymongo.ASCENDING)
         # transformation des datas du btc en df
         self.data_training = pd.DataFrame(list(btc_data))
+        data_now = pd.DataFrame(list(data_now))
+        self.data_training = pd.concat([self.data_training, data_now], axis=0)
+
 
         # copy du df
         self.trend_training_data = self.data_training.copy()
@@ -86,7 +91,7 @@ class Predict:
 
     def update_data_predict_trend(self):
         self.now = dt.datetime.now()
-        query = {"_id": dt.datetime(int(self.now.strftime("%Y")), int(self.now.strftime("%m")), int(self.now.strftime("%d")), 0, 0)}
+        query = {"_id": self.date}
         newvalues = { "$set": {"trend": self.trend_prediction[0]}}
         try:
             # on udpate la ligne du jours en ajoutant la colonne trend
@@ -115,7 +120,7 @@ class Predict:
         trend_predict = self.trend_training_y.iloc[len(lstm_training_data): len(lstm_training_data) + (self.chunks_size -1)]
 
         # on recupere la donnée du jours en la passant en df qu'on avait creer dans les trends
-        dict_pred = {"_id": dt.datetime(int(self.now.strftime("%Y")), int(self.now.strftime("%m")), int(self.now.strftime("%d")), 0, 0), "Diff_J+1": self.trend_prediction[0]}
+        dict_pred = {"_id": self.date, "Diff_J+1": self.trend_prediction[0]}
         df_pred = pd.DataFrame(dict_pred, index=[0])
         df_pred = df_pred.set_index("_id")
 
@@ -183,13 +188,13 @@ class Predict:
 
         lstm_testing_x = list()
         lstm_testing_x.append(model_inputs)
-
         lstm_testing_x = np.array(lstm_testing_x)
-        print(lstm_testing_x)
+        
         
         # on predit
         print("debut de la prediciton")
         self.prediction_prices = model.predict(lstm_testing_x)
+        print(self.prediction_prices)
         print("fin de la prediciton")
         
         self.prediction_prices = self.scaler.inverse_transform(self.prediction_prices)
@@ -197,7 +202,7 @@ class Predict:
         
     
     def update_data_predict_ltsm(self):
-        query = {"_id": dt.datetime(int(self.now.strftime("%Y")), int(self.now.strftime("%m")), int(self.now.strftime("%d")), 0, 0)}
+        query = {"_id": self.date}
         newvalues = { "$set": {"Predicted High": float(self.prediction_prices[0][0]),
                                "Predicted Low": float(self.prediction_prices[0][1]),
                                "Predicted Open": float(self.prediction_prices[0][2]),
@@ -217,8 +222,10 @@ class Predict:
 
 
 
+now = dt.datetime.now()
+date = dt.datetime(int(now.strftime("%Y")), int(now.strftime("%m")), int(now.strftime("%d")), 0, 0)
 
-predict = Predict()
+predict = Predict(date)
 predict.get_data()
 predict.preprocessing_trend()
 predict.training_model_RandomForestRegressor()
