@@ -25,10 +25,13 @@ fig.add_trace(go.Candlestick(x=df['Date'], open=df['Open'], high=df['High'], low
 
 # Create candlestick chart for bitcoin predictions
 pred_fig = go.Figure()
-pred_fig.add_trace(go.Candlestick(x=pred_df['Date'], open=pred_df['Open'], high=pred_df['High'], low=pred_df['Low'], close=pred_df['Close']))
+pred_fig.add_trace(go.Candlestick(x=pred_df['Date'], open=pred_df['Predicted Open'], high=pred_df['Predicted High'], low=pred_df['Predicted Low'], close=pred_df['Predicted Close']))
+
+st.header("Bitcoin prediction prices")
+st.plotly_chart(pred_fig)
 
 #Display chart
-st.header("Bitcoin prices from day 1")
+st.header("Bitcoin prices")
 st.plotly_chart(fig)
 
 # # TODO (change request url) Request API URL 
@@ -46,7 +49,7 @@ while True:
         kpi1, kpi2, kpi3 = st.columns(3)
         
         
-        if binance_df['rate_float'].values[0] < pred_df.iloc[-1:]['Close'].values[0]:
+        if binance_df['rate_float'].values[0] < pred_df.iloc[-1:]['Predicted Close'].values[0]:
             image = Image.open('soleil.png')
         else: 
             image = Image.open('pluie.png')
@@ -62,7 +65,7 @@ while True:
         kpi1.metric(label="BTC Price ₿/＄", value= round( binance_df['rate_float'] ,3))
         # kpi2.metric(label="Predicted close Price", value= binance_df['rate_float'] )
         kpi2.image(image)
-        kpi3.metric(label="Predicted close Price", value= round( pred_df.iloc[-1:]['Close'], 3) )
+        kpi3.metric(label="Predicted close Price", value= round( pred_df.iloc[-1:]['Predicted Close'], 3) )
         
         time.sleep(50)
     #placeholder.empty()
