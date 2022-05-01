@@ -6,5 +6,7 @@ WORKDIR /usr/src
 
 # copy files
 COPY requirements.txt ./
+COPY pluie.png ./
+COPY soleil.png ./  
 
 RUN pip3 install -r requirements.txt

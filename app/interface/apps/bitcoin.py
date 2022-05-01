@@ -13,7 +13,7 @@ today = date.today()
 placeholder = st.empty()
 
 # Request API URL 
-response = requests.get("http://0.0.0.0:5000/btcPrice").json()
+response = requests.get("http://app:5000/btcPrice").json()
 df = pd.DataFrame(response)
 
 # Create candlestick chart 
@@ -25,7 +25,7 @@ st.header("Bitcoin prices from day 1")
 st.plotly_chart(fig)
 
 # TODO (change request url) Request API URL 
-pred_response = requests.get("http://localhost:5000/btcPrice").json()
+pred_response = requests.get("http://app:5000/btcPrice").json()
 pred_df = pd.DataFrame(pred_response)
 print(pred_df.iloc[-1:]['Close'])
 
@@ -38,7 +38,7 @@ while True:
         
         # create three columns
         kpi1, kpi2, kpi3 = st.columns(3)
-        image = Image.open('interface/soleil.png')
+        image = Image.open('soleil.png')
         # if binance_df['rate_float'] < pred_df.iloc[-1:]['Close']:
         #     image = Image.open('interface/soleil.png')
         # else:
