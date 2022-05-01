@@ -1,79 +1,56 @@
-import streamlit as st # web development
-import numpy as np # np mean, np random 
-import pandas as pd # read csv, df manipulation
-import time # to simulate a real time data, time loop 
-import plotly.express as px # interactive charts 
+from matplotlib.pyplot import title
+import pandas as pd
+import streamlit as st
 import requests
-import json
+import plotly.graph_objects as go
+import time
+import numpy as np
+import plotly.express as px # interactive charts 
+from datetime import date
+from PIL import Image
 
-api_url = "http://localhost:5000/btcPrice"
-response = requests.get(api_url).json()
-# json_response = response.json()
-print(response)
-df_test = pd.DataFrame(response)
-
-# read csv from a github repo
-df = pd.read_csv("https://raw.githubusercontent.com/Lexie88rus/bank-marketing-analysis/master/bank.csv")
-
-
-st.set_page_config(
-    page_title = 'Real-Time Data Science Dashboard',
-    page_icon = '✅',
-    layout = 'wide'
-)
-
-# dashboard title
-
-st.title("Real-Time / Live Data Science Dashboard")
-
-# top-level filters 
-
-job_filter = st.selectbox("Select the Job", pd.unique(df['job']))
-
+today = date.today()
 
 # creating a single-element container.
 placeholder = st.empty()
 
-# dataframe filter 
+# Request API URL 
+response = requests.get("http://localhost:5000/btcPrice").json()
+df = pd.DataFrame(response)
 
-df = df[df['job']==job_filter]
+# Create candlestick chart 
+fig = go.Figure()
+fig.add_trace(go.Candlestick(x=df['Date'], open=df['Open'], high=df['High'], low=df['Low'], close=df['Close']))
+#Display chart
+st.header("Bitcoin prices from day 1")
+st.plotly_chart(fig)
 
-# near real-time / live feed simulation 
+# TODO (change request url) Request API URL 
+pred_response = requests.get("http://localhost:5000/btcPrice").json()
+pred_df = pd.DataFrame(pred_response)
+print(pred_df.iloc[-1:]['Close'])
 
-for seconds in range(200):
-#while True: 
-    
-    df['age_new'] = df['age'] * np.random.choice(range(1,5))
-    df['balance_new'] = df['balance'] * np.random.choice(range(1,5))
-
-    # creating KPIs 
-    avg_age = np.mean(df['age_new']) 
-
-    count_married = int(df[(df["marital"]=='married')]['marital'].count() + np.random.choice(range(1,30)))
-    
-    balance = np.mean(df['balance_new'])
+while True: 
 
     with placeholder.container():
+        binance_url = "https://api.coindesk.com/v1/bpi/currentprice.json"
+        binance_response = requests.get(binance_url).json()
+        binance_df = pd.DataFrame(binance_response['bpi']['USD'], index=[0])
+        
+        
+        
         # create three columns
         kpi1, kpi2, kpi3 = st.columns(3)
+        
+        image = Image.open('streamlit/pluie.png')
 
         # fill in those three columns with respective metrics or KPIs 
-        kpi1.metric(label="Age ⏳", value=round(avg_age), delta= round(avg_age) - 10)
-        kpi2.metric(label="Married Count 💍", value= int(count_married), delta= - 10 + count_married)
-        kpi3.metric(label="A/C Balance ＄", value= f"$ {round(balance,2)} ", delta= - round(balance/count_married) * 100)
-
-        # create two columns for charts 
-
-        fig_col1, fig_col2 = st.columns(2)
-        with fig_col1:
-            st.markdown("### First Chart")
-            fig = px.density_heatmap(data_frame=df, y = 'age_new', x = 'marital')
-            st.write(fig)
-        with fig_col2:
-            st.markdown("### Second Chart")
-            fig2 = px.histogram(data_frame = df, x = 'age_new')
-            st.write(fig2)
-        st.markdown("### Detailed Data View")
-        st.dataframe(df)
-        time.sleep(1)
+        kpi1.metric(label="BTC Price ₿/＄", value= round( binance_df['rate_float'] ,3))
+        # kpi2.metric(label="Predicted close Price", value= binance_df['rate_float'] )
+        kpi2.image(image)
+        kpi3.metric(label="Predicted close Price", value= round( pred_df.iloc[-1:]['Close'], 3) )
+        
+        # kpi2.metric(label="Married Count 💍", value= int(count_married), delta= - 10 + count_married)
+        # kpi3.metric(label="A/C Balance ＄", value= f"$ {round(balance,2)} ", delta= - round(balance/count_married) * 100)
+        time.sleep(50)
     #placeholder.empty()
