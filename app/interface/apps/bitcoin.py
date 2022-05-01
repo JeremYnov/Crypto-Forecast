@@ -4,8 +4,6 @@ import streamlit as st
 import requests
 import plotly.graph_objects as go
 import time
-import numpy as np
-import plotly.express as px # interactive charts 
 from datetime import date
 from PIL import Image
 
@@ -15,12 +13,13 @@ today = date.today()
 placeholder = st.empty()
 
 # Request API URL 
-response = requests.get("http://localhost:5000/btcPrice").json()
+response = requests.get("http://0.0.0.0:5000/btcPrice").json()
 df = pd.DataFrame(response)
 
 # Create candlestick chart 
 fig = go.Figure()
 fig.add_trace(go.Candlestick(x=df['Date'], open=df['Open'], high=df['High'], low=df['Low'], close=df['Close']))
+
 #Display chart
 st.header("Bitcoin prices from day 1")
 st.plotly_chart(fig)
@@ -37,12 +36,13 @@ while True:
         binance_response = requests.get(binance_url).json()
         binance_df = pd.DataFrame(binance_response['bpi']['USD'], index=[0])
         
-        
-        
         # create three columns
         kpi1, kpi2, kpi3 = st.columns(3)
-        
-        image = Image.open('streamlit/pluie.png')
+        image = Image.open('interface/soleil.png')
+        # if binance_df['rate_float'] < pred_df.iloc[-1:]['Close']:
+        #     image = Image.open('interface/soleil.png')
+        # else:
+        #     image = Image.open('interface/pluie.png')
 
         # fill in those three columns with respective metrics or KPIs 
         kpi1.metric(label="BTC Price ₿/＄", value= round( binance_df['rate_float'] ,3))
@@ -50,7 +50,5 @@ while True:
         kpi2.image(image)
         kpi3.metric(label="Predicted close Price", value= round( pred_df.iloc[-1:]['Close'], 3) )
         
-        # kpi2.metric(label="Married Count 💍", value= int(count_married), delta= - 10 + count_married)
-        # kpi3.metric(label="A/C Balance ＄", value= f"$ {round(balance,2)} ", delta= - round(balance/count_married) * 100)
         time.sleep(50)
     #placeholder.empty()

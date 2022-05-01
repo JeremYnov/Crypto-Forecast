@@ -1,6 +1,5 @@
 version: "3.2"
 services:
-
   mongo:
     image: mongo
     container_name: mongodb
@@ -26,6 +25,23 @@ services:
       ME_CONFIG_MONGODB_URL: ${MONGO_URL}
     depends_on:
       - mongo
+
+  # ======================
+  # Interface
+  # ======================    
+  streamlit:
+    container_name: interface
+    command: streamlit run app.py
+    build:
+      dockerfile: Dockerfile_python
+      context: ./interface
+    volumes:
+      - ./interface:/usr/src
+    depends_on:
+      - mongo
+      - app
+    ports:
+      - 8501:8501
 
   app:
     container_name: app
