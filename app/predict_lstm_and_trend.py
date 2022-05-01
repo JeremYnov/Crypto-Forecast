@@ -221,17 +221,17 @@ class Predict:
 
 
 
+if __name__ == "__main__":
+    now = dt.datetime.now()
+    date = dt.datetime(int(now.strftime("%Y")), int(now.strftime("%m")), int(now.strftime("%d")), 0, 0)
 
-now = dt.datetime.now()
-date = dt.datetime(int(now.strftime("%Y")), int(now.strftime("%m")), int(now.strftime("%d")), 0, 0)
-
-predict = Predict(date)
-predict.get_data()
-predict.preprocessing_trend()
-predict.training_model_RandomForestRegressor()
-predict.predict_trend()
-predict.update_data_predict_trend()
-predict.processing_lstm()
-# predict.save_model()
-predict.predict_lstm()
-predict.update_data_predict_ltsm()
+    predict = Predict(date)
+    predict.get_data()
+    predict.preprocessing_trend()
+    predict.training_model_RandomForestRegressor()
+    predict.predict_trend()
+    predict.update_data_predict_trend()
+    predict.processing_lstm()
+    # predict.save_model()
+    predict.predict_lstm()
+    predict.update_data_predict_ltsm()
