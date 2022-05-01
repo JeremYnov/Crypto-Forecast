@@ -23,8 +23,8 @@ pred_df = pd.DataFrame(pred_response)
 fig = go.Figure()
 fig.add_trace(go.Candlestick(x=df['Date'], open=df['Open'], high=df['High'], low=df['Low'], close=df['Close']))
 
-predicted_fig = go.Figure()
-predicted_fig.add_trace(go.Candlestick(x=pred_df['Date'], open=pred_df['Open'], high=pred_df['High'], low=pred_df['Low'], close=pred_df['Close']))
+pred_fig = go.Figure()
+pred_fig.add_trace(go.Candlestick(x=pred_df['Date'], open=pred_df['Open'], high=pred_df['High'], low=pred_df['Low'], close=pred_df['Close']))
 
 #Display chart
 st.header("Bitcoin prices from day 1")
