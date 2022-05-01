@@ -19,10 +19,11 @@ df = pd.DataFrame(response)
 pred_response = requests.get("http://app:5000/predPrice").json()
 pred_df = pd.DataFrame(pred_response)
 
-# Create candlestick chart 
+# Create candlestick chart for bitcoin
 fig = go.Figure()
 fig.add_trace(go.Candlestick(x=df['Date'], open=df['Open'], high=df['High'], low=df['Low'], close=df['Close']))
 
+# Create candlestick chart for bitcoin predictions
 pred_fig = go.Figure()
 pred_fig.add_trace(go.Candlestick(x=pred_df['Date'], open=pred_df['Open'], high=pred_df['High'], low=pred_df['Low'], close=pred_df['Close']))
 
