@@ -57,7 +57,7 @@ class BotTwitter:
                 tweets.append(
                     {
                     'Text':tweet.full_text,
-                    'Created_at':tweet.created_at.strftime("%d-%b-%Y")
+                    'Created_at':tweet.created_at.strftime("%Y-%m-%d")
                     }
                     )
         except TweepyException as e:
