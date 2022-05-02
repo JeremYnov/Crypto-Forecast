@@ -53,7 +53,7 @@ class BotTwitter:
                 q=self.search_term,
                 lang=self.language,
                 tweet_mode="extended",
-            ).items(10):
+            ).items(200):
                 tweets.append(
                     {
                     'Text':tweet.full_text,
@@ -62,11 +62,9 @@ class BotTwitter:
                     )
         except TweepyException as e:
             print("Error : " + str(e))
-        print(tweets)
         if tweets:
             self.df = pd.DataFrame(tweets)
             self.cleanTweets()
-            print(f"tweets after be cleaned = {self.df}")
             return self.df
         else:
             print("Error : Tweets recovery failed. Retry")

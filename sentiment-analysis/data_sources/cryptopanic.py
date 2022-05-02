@@ -36,7 +36,6 @@ class Cryptopanic:
                         break
             else :
                 break
-        print(df)
         return df
             
         

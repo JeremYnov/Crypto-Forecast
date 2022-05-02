@@ -1,26 +1,37 @@
-from sentiment_analysis.tf_rnn_classification import RNNClassifier
 from data_sources.bot_twitter import BotTwitter
+from data_sources.cryptopanic import Cryptopanic
+from sentiment_analysis.nltk_classification import NLTKClassifier
 import pandas as pd
-from os import path
-import tensorflow as tf 
+from nltk.corpus import stopwords
 
 if __name__ == "__main__":
-    classifier = RNNClassifier()
+    classifier = NLTKClassifier()
     twitter_bot = BotTwitter('bitcoin')
-    
-    if not path.exists("trained_model/rnn_trained_model"):
-        classifier.define_model()
+    cryptopanic = Cryptopanic()
         
     tweets_df = twitter_bot.getTweets()
-    # defined_model = classifier.define_model()
-    # classifier.two_layers_model_prediction('This is my best test text')
-    predictions = []
-    for index, row in tweets_df.iterrows(): 
-        prediction = classifier.two_layers_model_prediction(row["Text"])
-        predictions.append(prediction[0][0])
-        
-    print(predictions)
-        # print(row["Text"])
-    # tweets_df['sentiment_analysis'] = tweets_df.apply(classifier.two_layers_model_prediction(tweets_df['Text']))
+    cryptopanic_df = cryptopanic.getData()
     
-    # print(tweets_df)
+    text_to_analyze = pd.concat([cryptopanic_df, tweets_df])
+    predictions = []
+    trained_model = classifier.train_model()
+    wordcloud_text = ''
+    for index, row in text_to_analyze.iterrows(): 
+        prediction = classifier.predict(text = row["Text"],train_model=trained_model)
+        predictions.append(prediction)
+        wordcloud_text = wordcloud_text + row['Text']
+        
+    text_to_analyze['Sentiment'] = predictions
+    print(text_to_analyze)
+    
+    from wordcloud import WordCloud
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from PIL import Image
+   
+   
+stop_words = stopwords.words('english') 
+wordcloud = WordCloud(background_color = 'white', stopwords = stop_words, max_words = 50).generate(' '.join(text_to_analyze ['Text']))
+plt.imshow(wordcloud)
+plt.axis("off")
+plt.show();
