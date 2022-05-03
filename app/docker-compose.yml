@@ -65,5 +65,18 @@ services:
              python3 /cryptoForecast/script_update_btc_datas.py --True &&
              cd cryptoForecast &&
              python3 -m flask run --host=0.0.0.0"
+  
+  sentiment_analysis:
+    container_name: sentiment_analysis
+    restart: on-failure
+    command: python3 ./main.py
+    build:
+      dockerfile: Dockerfile_python
+      context: ./sentiment-analysis
+    volumes:
+      - ./sentiment-analysis:/usr/src
+      - ./.env:/usr/src/.env
+    depends_on:
+      - mongo
 volumes:
   mongo:
