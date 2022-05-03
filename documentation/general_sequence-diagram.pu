@@ -1,6 +1,6 @@
 @startuml general_sequence-diagram
 actor       User           as u
-box "Dockered"
+box "Dockered" #White
 participant UI             as ui
 participant API            as api
 database    mongoDB        as db
