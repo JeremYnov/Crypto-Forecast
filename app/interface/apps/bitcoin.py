@@ -71,8 +71,11 @@ with col3:
 
 with col4:
     st.plotly_chart(new_fig)
+    
+sa_response = requests.get("http://app:5000/sentiment").json()
+sa_df = pd.DataFrame(sa_response)
 
-
+st.dataframe(sa_df)
 
 
 while True: 
