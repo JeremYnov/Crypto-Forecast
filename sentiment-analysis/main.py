@@ -3,6 +3,10 @@ from data_sources.cryptopanic import Cryptopanic
 from sentiment_analysis.nltk_classification import NLTKClassifier
 import pandas as pd
 from nltk.corpus import stopwords
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
 
 if __name__ == "__main__":
     classifier = NLTKClassifier()
@@ -24,10 +28,7 @@ if __name__ == "__main__":
     text_to_analyze['Sentiment'] = predictions
     print(text_to_analyze)
     
-    from wordcloud import WordCloud
-    import matplotlib.pyplot as plt
-    import numpy as np
-    from PIL import Image
+    
    
    
 stop_words = stopwords.words('english') 
