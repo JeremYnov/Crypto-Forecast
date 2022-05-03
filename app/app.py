@@ -19,7 +19,7 @@ def parse_date(queryReturn):
         element['Date'] = element['_id'].strftime("%Y-%m-%d")
         del element['_id']
     return queryReturn
-    
+
 
 @app.route('/docs', methods=['GET'])
 def docs():

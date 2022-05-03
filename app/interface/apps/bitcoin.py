@@ -1,3 +1,4 @@
+from matplotlib import colors
 from matplotlib.pyplot import title
 import pandas as pd
 import streamlit as st
@@ -6,6 +7,7 @@ import plotly.graph_objects as go
 import time
 from datetime import date
 from PIL import Image
+import plotly.express as px
 
 st.set_page_config(layout="wide")
 
@@ -67,15 +69,21 @@ new_fig.add_trace(go.Scatter(
 col3, col4 = st.columns(2)
 with col3:
     st.dataframe(comparison_df)
-    
 
 with col4:
     st.plotly_chart(new_fig)
-    
+   
+col5, col6 = st.columns(2) 
 sa_response = requests.get("http://app:5000/sentiment").json()
-sa_df = pd.DataFrame(sa_response)
+sa_df= pd.DataFrame.from_dict(sa_response, orient='index', columns=['num'])
 
-st.dataframe(sa_df)
+fig = px.pie(sa_df, values=sa_df['num'], names=sa_df.index, title='Number of positive and negative review about bitcoin', color_discrete_sequence=px.colors.sequential.RdBu)
+
+with col5:
+    st.dataframe(sa_df)
+
+with col6:
+    st.plotly_chart(fig)
 
 
 while True: 
