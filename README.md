@@ -50,10 +50,10 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#project-architecture">Project architecture</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -118,7 +118,7 @@ This is the list of softwares we need and how to install them.
 
 USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES 
 
-_For more examples, please refer to the [Documentation]([documentation/Crypto-Forecast - Feuille de route.docx](https://github.com/JeremYnov/Crypto-Forecast/blob/main/documentation/Crypto-Forecast%20-%20Feuille%20de%20route.docx))_
+_For more examples, please refer to the [Documentation]((https://github.com/JeremYnov/Crypto-Forecast/blob/main/documentation/Crypto-Forecast%20-%20Feuille%20de%20route.docx))_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -136,7 +136,7 @@ See the [open issues](https://github.com/JeremYnov/Crypto-Forecast/issues) for a
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- SEQUENCE DIAGRAM -->
-## Interne Architecture
+## Project Architecture
 
 The diagram below represent the workflow of the application.
 [![Seq Diagram][seq-diagram]](https://example.com)
