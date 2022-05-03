@@ -1,7 +1,7 @@
 from predict_lstm_and_trend import Predict
 import datetime as dt
 
-date = dt.datetime(2022, 1, 1, 0, 0)
+date = dt.datetime(2021, 1, 1, 0, 0)
 end_date = dt.datetime.now()
 delta = dt.timedelta(days=1)
 

@@ -10,8 +10,8 @@ st.markdown(
 """
 )
 
-# Every app is a page on interface
+# # Every app is a page on interface
 app.add_app("Bitcoin Dashboard", bitcoin.app)
 
-# Run the app
+# # Run the app
 app.run()
