@@ -1,5 +1,5 @@
-from pymongo import MongoClient
 import os
+from pymongo import MongoClient
 from dotenv import load_dotenv
 
 class Mongo:
@@ -9,10 +9,5 @@ class Mongo:
         # database connection
         self.database = self.client[os.getenv("MONGO_DB_NAME")]
     
-    def getCollection(self, collection):
-        # collections creation
-        text_data = self.database[collection]
-
-        # get collections
-        text_data_db = self.database.get_collection(collection)
-        return text_data_db
+    def getCollection(self, collection_name):
+        return self.database.get_collection(collection_name)

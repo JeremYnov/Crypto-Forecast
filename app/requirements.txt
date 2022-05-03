@@ -1,5 +1,4 @@
 pymongo
-#python-dotenv
 pandas-datareader
 pandas
 numpy

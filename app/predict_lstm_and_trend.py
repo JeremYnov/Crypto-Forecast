@@ -1,22 +1,18 @@
 import numpy as np
 import pandas as pd
 import datetime as dt
+import pandas_datareader as pd_dr
 import pymongo
-
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
-
-from tools.mongo_connector import Mongo
-import pandas_datareader as pd_dr
-
-from script_update_btc_datas import update_datas
-
 from tensorflow.keras.layers import Dense, Dropout, LSTM
 from tensorflow.keras.models import Sequential, save_model, load_model
 
+from tools.mongo_connector import Mongo
+from script_update_btc_datas import update_datas
+
 
 class Predict:
-
     def __init__(self, date):
         self.btc_columns = { '_id': 1, 'High': 1, 'Low': 1, 'Open': 1, 'Close': 1, 'Volume': 1 }
         # recuperation de mongo et de la collection btc
@@ -31,7 +27,6 @@ class Predict:
         except:
             print("données déjà mis en base aujourd'hui")
 
-    
     def get_data(self):
         # recuperation de toutes les datas du btc order by date
         btc_data = self.btc_collection.find({"_id": {"$lt": self.date}}, self.btc_columns).sort("_id", pymongo.ASCENDING)
@@ -40,8 +35,6 @@ class Predict:
         self.data_training = pd.DataFrame(list(btc_data))
         data_now = pd.DataFrame(list(data_now))
         self.data_training = pd.concat([self.data_training, data_now], axis=0)
-
-
         # copy du df
         self.trend_training_data = self.data_training.copy()
         self.trend_training_data = self.trend_training_data.set_index("_id")
@@ -52,8 +45,6 @@ class Predict:
         self.data_pred = self.trend_training_data.iloc[[len(self.trend_training_data) - 1]]
         # on recupere les autres lignes qui vont entrainer le modele
         self.trend_training_data = self.trend_training_data[:-1]
-
-
 
         #trend preprocessing
         trend_training_data_j1 = self.trend_training_data.shift(periods=1)
@@ -73,21 +64,18 @@ class Predict:
         self.trend_training_x = trend_scaler.fit_transform(self.trend_training_x)
         self.data_pred = trend_scaler.fit_transform(self.data_pred)
 
-    
     def training_model_RandomForestRegressor(self):
         # on entraine le modele
         self.model = RandomForestRegressor()
         print("Debut de l'entrainement")
         self.model.fit(self.trend_training_x, self.trend_training_y)
-        print("Fin de l'entrainement")
-    
+        print("Fin de l'entrainement")    
 
     def predict_trend(self):
         # on fait la prediciton
         print("Debut de la prediction")
         self.trend_prediction = self.model.predict(self.data_pred)
         print("Fin de la prediction")
-    
 
     def update_data_predict_trend(self):
         self.now = dt.datetime.now()
@@ -99,12 +87,10 @@ class Predict:
             print("update en base reussis")
         except:
             print("erreur à l'update en base")
-    
 
     def processing_lstm(self):
         lstm_training_data = self.data_training.copy()
         lstm_training_data = lstm_training_data.set_index("_id")
-        
 
         # on recupere un paquet de 90 lignes
         self.data_pred_lstm = lstm_training_data.iloc[len(lstm_training_data) - self.chunks_size: len(lstm_training_data)]
@@ -146,10 +132,6 @@ class Predict:
         # conversion en tableay numpy
         self.lstm_training_x, self.lstm_training_y = np.array(self.lstm_training_x), np.array(self.lstm_training_y)
 
-        
-
-        
-
     def save_model(self):
         # creation du model
         self.model = Sequential()
@@ -183,32 +165,27 @@ class Predict:
         # on load le model
         model = self.load_model_lstm()
         model_inputs = self.data_pred_lstm.values
-
         model_inputs = self.scaler.fit_transform(model_inputs)
-
         lstm_testing_x = list()
         lstm_testing_x.append(model_inputs)
         lstm_testing_x = np.array(lstm_testing_x)
-        
-        
+
         # on predit
         print("debut de la prediciton")
         self.prediction_prices = model.predict(lstm_testing_x)
         print(self.prediction_prices)
         print("fin de la prediciton")
-        
         self.prediction_prices = self.scaler.inverse_transform(self.prediction_prices)
-
-        
     
     def update_data_predict_ltsm(self):
         query = {"_id": self.date}
-        newvalues = { "$set": {"Predicted High": float(self.prediction_prices[0][0]),
-                               "Predicted Low": float(self.prediction_prices[0][1]),
-                               "Predicted Open": float(self.prediction_prices[0][2]),
-                               "Predicted Close": float(self.prediction_prices[0][3]),
-                               "Predicted Volume": float(self.prediction_prices[0][4])}}
-
+        newvalues = { "$set": {
+            "Predicted High": float(self.prediction_prices[0][0]),
+            "Predicted Low": float(self.prediction_prices[0][1]),
+            "Predicted Open": float(self.prediction_prices[0][2]),
+            "Predicted Close": float(self.prediction_prices[0][3]),
+            "Predicted Volume": float(self.prediction_prices[0][4])
+        }}
         try:
             # on udpate la ligne du jours en ajoutant la colonne trend
             self.btc_collection.update_one(query, newvalues)
@@ -216,15 +193,15 @@ class Predict:
         except:
             print("erreur à l'update en base")
 
-
-
-
-
-
 if __name__ == "__main__":
     now = dt.datetime.now()
-    date = dt.datetime(int(now.strftime("%Y")), int(now.strftime("%m")), int(now.strftime("%d")), 0, 0)
-
+    date = dt.datetime(
+        int(now.strftime("%Y")), 
+        int(now.strftime("%m")), 
+        int(now.strftime("%d")), 
+        0, 
+        0
+    )
     predict = Predict(date)
     predict.get_data()
     predict.preprocessing_trend()

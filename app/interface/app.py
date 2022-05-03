@@ -1,13 +1,15 @@
 import streamlit as st
+
 from multiapp import MultiApp
 from apps import bitcoin
+
 
 app = MultiApp()
 
 st.markdown(
     """
-# Crypto-Forecaste
-"""
+    # Crypto-Forecaste
+    """
 )
 
 # Every app is a page on interface

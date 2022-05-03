@@ -1,16 +1,16 @@
 import numpy as np
-
-import tensorflow_datasets as tfds
 import tensorflow as tf
-
-tfds.disable_progress_bar()
-
 import matplotlib.pyplot as plt
+import tensorflow_datasets as tfds
+
 
 BUFFER_SIZE = 10000
 BATCH_SIZE = 64
 VOCAB_SIZE = 1000
 PKL_FILENAME = "sentiment_analysis/trained_model.pkl"
+
+tfds.disable_progress_bar()
+
 
 class RNNClassifier:
     def __init__(self) -> None:
@@ -34,8 +34,8 @@ class RNNClassifier:
 
         self.train_dataset = (
             self.train_dataset.shuffle(BUFFER_SIZE)
-            .batch(BATCH_SIZE)
-            .prefetch(tf.data.AUTOTUNE)
+                .batch(BATCH_SIZE)
+                .prefetch(tf.data.AUTOTUNE)
         )
         self.test_dataset = self.test_dataset.batch(BATCH_SIZE).prefetch(tf.data.AUTOTUNE)
 
@@ -60,23 +60,27 @@ class RNNClassifier:
     
     def two_layers_model_creation(self):
         self.model = tf.keras.Sequential([
-        self.encoder,
-        tf.keras.layers.Embedding(len(self.encoder.get_vocabulary()), 64, mask_zero=True),
-        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64,  return_sequences=True)),
-        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(1)
+            self.encoder,
+            tf.keras.layers.Embedding(len(self.encoder.get_vocabulary()), 64, mask_zero=True),
+            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64,  return_sequences=True)),
+            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+            tf.keras.layers.Dense(64, activation='relu'),
+            tf.keras.layers.Dropout(0.5),
+            tf.keras.layers.Dense(1)
         ])
     def two_layers_model_compile(self):
-        self.model.compile(loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
-                optimizer=tf.keras.optimizers.Adam(1e-4),
-                metrics=['accuracy'])
+        self.model.compile(
+            loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+            optimizer=tf.keras.optimizers.Adam(1e-4),
+            metrics=['accuracy']
+        )
 
     def two_layers_model_train(self):
-        history = self.model.fit(self.train_dataset, epochs=10,
-                        validation_data=self.test_dataset,
-                        validation_steps=30)
+        self.model.fit(
+            self.train_dataset, epochs=10,
+                validation_data=self.test_dataset,
+                validation_steps=30
+            )
         test_loss, test_acc = self.model.evaluate(self.test_dataset)
         print('Test Loss:', test_loss)
         print('Test Accuracy:', test_acc)
@@ -100,5 +104,4 @@ class RNNClassifier:
     def two_layers_model_prediction(self, text):
         self.load_trained_model()
         # predict on a sample text without padding.
-        prediction = self.trained_model.predict(np.array([text]))
-        return prediction
+        return self.trained_model.predict(np.array([text]))

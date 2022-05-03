@@ -1,35 +1,30 @@
-import csv
 import os
+import re
+import csv
+import time 
+import pandas as pd
 from tweepy.errors import TweepyException
 from tweepy import OAuthHandler, Cursor, API
-import pandas as pd
-import re
-import time 
 
 
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # This is your Project Root
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class BotTwitter:
-    def __init__(
-        self,
-        search_term,
-        path_to_login=os.path.join(ROOT_DIR, "credentials", "twitter_login.csv"),
-        language="en",
-    ):
+    def __init__( self, search_term, path_to_login=None, language="en"):
         self.search_term = search_term
         self.path_to_login = path_to_login
         self.language = language
+        if not path_to_login:
+            path_to_login = os.path.join(ROOT_DIR, "credentials", "twitter_login.csv")
 
     # Get tokens
     def getTokens(self):
-        credentials = []
         with open(self.path_to_login, "r") as file:
             csvreader = csv.reader(file)
-            for row in csvreader:
-                credentials.append(row)
+            credentials = [row for row in csvreader]
         # Don't return headers
-        return credentials[1]
+        return credentials[1:]
 
     def authentication(self):
         tokens = self.getTokens()
@@ -48,18 +43,12 @@ class BotTwitter:
         self.authentication()
         tweets = []
         try:
-            for tweet in Cursor(
-                self.api.search_tweets,
-                q=self.search_term,
-                lang=self.language,
-                tweet_mode="extended",
-            ).items(200):
-                tweets.append(
-                    {
+            for tweet in Cursor(self.api.search_tweets, q=self.search_term,
+              lang=self.language,tweet_mode="extended",).items(200):
+                tweets.append({
                     'Text':tweet.full_text,
                     'Created_at':tweet.created_at.strftime("%Y-%m-%d")
-                    }
-                    )
+                })
         except TweepyException as e:
             print("Error : " + str(e))
         if tweets:

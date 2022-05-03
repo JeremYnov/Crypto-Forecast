@@ -35,8 +35,8 @@ services:
     container_name: interface
     command: streamlit run app.py
     build:
-      dockerfile: Dockerfile_python
       context: ./interface
+      dockerfile: Dockerfile
     volumes:
       - ./interface:/usr/src
     depends_on:
@@ -47,7 +47,6 @@ services:
 
   app:
     container_name: app
-    #restart: always
     image:
       python:3.8
     ports:

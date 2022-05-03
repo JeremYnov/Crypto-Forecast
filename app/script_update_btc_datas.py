@@ -1,15 +1,14 @@
 import sys
-from tools.mongo_connector import Mongo
-import pandas as pd
-from datetime import datetime as dt, timedelta
-import pandas_datareader as pd_dr
 import numpy as np
+import pandas as pd
+import pandas_datareader as pd_dr
+from datetime import datetime as dt
+
+from tools.mongo_connector import Mongo
+
 
 def update_datas(initialisation):
-    
-    today = dt.today()
-    mongo = Mongo()
-    btc_collection = mongo.getCollection("btc")
+    btc_collection = Mongo().getCollection("btc")
 
     if initialisation and btc_collection.count_documents({}) == 0 :
         print('Initialisation')
@@ -17,9 +16,9 @@ def update_datas(initialisation):
     elif initialisation:
         print('Already initialise')
         return
-    else :
+    else:
         print('Updating datas')
-        data = pd_dr.DataReader( 'BTC-USD', 'yahoo', today - timedelta(days=1), today ).iloc[[-1]]
+        data = pd_dr.DataReader( 'BTC-USD', 'yahoo', dt.today() - dt.timedelta(days=1), dt.today() ).iloc[[-1]]
 
     data = data.drop(["Adj Close"], axis=1)
     data.reset_index(inplace=True)
