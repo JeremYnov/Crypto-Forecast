@@ -1,0 +1,33 @@
+@startuml general_sequence-diagram
+actor       User           as u
+box "Dockered"
+participant UI             as ui
+participant API            as api
+database    mongoDB        as db
+participant AI_server      as ai
+end box
+collections cyptoEndpoints as ce
+
+loop every day
+    ai <-> ce: fetch new prices
+    ai -> ai: update AI modele
+    ai -> db: upload last predictions
+end
+
+u -> ui: open web page
+activate ui
+ui -> api: request last prediction
+api <- db: retrieve datas
+api -> ui: send back desired datas
+ui -> ui: create charts
+
+loop every minute
+    ui -> api: request last prediction
+    api <- db: retrieve datas
+    api -> ui: send back desired datas
+    ui -> ui: update charts
+end
+
+u -> ui: quit page
+deactivate ui
+@enduml
