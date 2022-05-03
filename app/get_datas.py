@@ -18,4 +18,3 @@ while date <= end_date:
     predict.predict_lstm()
     predict.update_data_predict_ltsm()
     date += delta
-    

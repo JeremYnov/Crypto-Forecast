@@ -1,5 +1,9 @@
 version: "3.2"
 services:
+
+  # ======================
+  # DB
+  # ======================   
   mongo:
     image: mongo
     container_name: mongodb
@@ -16,6 +20,9 @@ services:
       MONGODB_DATA_DIR: ./volumes/db
       MONGODB_LOG_DIR: /dev/null
 
+  # ======================
+  # DB admin tools
+  # ======================   
   mongo-express:
     image: mongo-express
     restart: always
@@ -45,6 +52,9 @@ services:
     ports:
       - 8501:8501
 
+  # ======================
+  # API
+  # ======================   
   app:
     container_name: app
     image:

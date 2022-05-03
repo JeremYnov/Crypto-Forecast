@@ -39,9 +39,9 @@ def btcPrice():
 @app.route('/predPrice', methods=['GET'])
 def predPrice():
     try:
-        response = btc_collection.find({},pred_columns).limit(int( request.args.get('pages') ))
+        response = btc_collection.find({}, pred_columns).limit(int( request.args.get('pages') ))
     except TypeError:
-        response = btc_collection.find({},pred_columns)
+        response = btc_collection.find({}, pred_columns)
     return json.dumps( parse_date(list(response)), default=json_util.default), 200
 
 @app.route('/lastRow', methods=['GET'])
