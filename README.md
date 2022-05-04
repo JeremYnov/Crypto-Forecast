@@ -127,9 +127,15 @@ _For more examples, please refer to the [Documentation]((https://github.com/Jere
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-    - [ ] Feature 2.1
+- [X] AI prediction
+  - [X] BTC
+  - [ ] ETH
+- [X] sentiment analysis
+- [X] Database setup
+- [X] Docker
+- [X] UI
+  - [X] Pred charts
+  - [ ] Sentiment charts
 
 See the [open issues](https://github.com/JeremYnov/Crypto-Forecast/issues) for a full list of proposed features (and known issues).
 
