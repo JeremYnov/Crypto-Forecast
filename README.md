@@ -1,11 +1,8 @@
 <div id="top"></div>
 
 [![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
@@ -13,7 +10,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/JeremYnov/Crypto-Forecast">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="documentation/logo.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Crypto-Forecast</h3>
@@ -53,10 +50,10 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#project-architecture">Project architecture</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -67,7 +64,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Description
+Artificial intelligence has many applications, from the sublime to the ridiculous. Helping people make smart and profitable investments is a use case at the highly valuable end of the scale. With that in mind we developed Crypto-Forecast to help you and other make smart investments in cryptocurrencies.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -101,19 +98,16 @@ This is the list of softwares we need and how to install them.
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/JeremYnov/Crypto-Forecast.git
+   cd Crypto-Forecast
    ```
-3. Install NPM packages
+2. Create docker containers 
    ```sh
-   npm install
+   docker-compose up
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+3. Wait a bit for the application to start and then open the [UI](http://localhost:8501) 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -122,9 +116,9 @@ This is the list of softwares we need and how to install them.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES USAGE EXAMPLES 
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+_For more examples, please refer to the [Documentation]((https://github.com/JeremYnov/Crypto-Forecast/blob/main/documentation/Crypto-Forecast%20-%20Feuille%20de%20route.docx))_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -135,14 +129,17 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 - [ ] Feature 1
 - [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+    - [ ] Feature 2.1
 
 See the [open issues](https://github.com/JeremYnov/Crypto-Forecast/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+<!-- SEQUENCE DIAGRAM -->
+## Project Architecture
 
+The diagram below represent the workflow of the application.
+[![Seq Diagram][seq-diagram]](https://example.com)
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -173,38 +170,23 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
 ## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Main contributors:
+* RICHARD Jérémy <jeremy.richard@ynov.com>
+* CHARLON Owain <owain.charlon@ynov.com>
+* ARDILLY Louis <louis.ardilly@ynov.com>
+* BAGNIS Paul <paul.bagnis@ynov.com>
+* GUERN François <francois.guern@ynov.com>
 
 Project Link: [https://github.com/JeremYnov/Crypto-Forecast](https://github.com/JeremYnov/Crypto-Forecast)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/JeremYnov/Crypto-Forecast.svg?style=for-the-badge
 [contributors-url]: https://github.com/JeremYnov/Crypto-Forecast/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/JeremYnov/Crypto-Forecast.svg?style=for-the-badge
-[forks-url]: https://github.com/JeremYnov/Crypto-Forecast/network/members
-[stars-shield]: https://img.shields.io/github/stars/JeremYnov/Crypto-Forecast.svg?style=for-the-badge
-[stars-url]: https://github.com/JeremYnov/Crypto-Forecast/stargazers
 [issues-shield]: https://img.shields.io/github/issues/JeremYnov/Crypto-Forecast.svg?style=for-the-badge
 [issues-url]: https://github.com/JeremYnov/Crypto-Forecast/issues
 [license-shield]: https://img.shields.io/github/license/JeremYnov/Crypto-Forecast.svg?style=for-the-badge
 [license-url]: https://github.com/JeremYnov/Crypto-Forecast/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: documentation/screenshot.png
+[seq-diagram]: documentation/general_sequence-diagram.svg
