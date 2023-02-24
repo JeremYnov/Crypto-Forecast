@@ -177,7 +177,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 Main contributors:
-* RICHARD Jérémy <jeremy.richard@ynov.com>
+* RICHARD Jérémy <jeremy.richardev@gmail.com>
 * CHARLON Owain <owain.charlon@ynov.com>
 * ARDILLY Louis <louis.ardilly@ynov.com>
 * BAGNIS Paul <paul.bagnis@ynov.com>
